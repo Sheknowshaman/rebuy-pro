@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c111b">
+<meta name="description" content="REBUY PRO — Assistant personnel d'estimation et de rachat.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<title>REBUY PRO</title>
+<style>
+:root{
+ --bg:#0b1019;--surface:#111a27;--surface2:#172333;--surface3:#1d2b3e;
+ --line:rgba(255,255,255,.085);--text:#f5f7fb;--muted:#91a0b5;
+ --gold:#e9b95b;--gold2:#f7d995;--green:#53c69a;--red:#ff7777;
+ --shadow:0 18px 48px rgba(0,0,0,.25);--radius:20px;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 80% -10%,rgba(233,185,91,.12),transparent 35%),var(--bg);color:var(--text);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.app-shell{max-width:1180px;margin:0 auto;min-height:100vh;padding-bottom:100px}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(11,16,25,.84);backdrop-filter:blur(18px)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#f7d995,#c98b2e);display:grid;place-items:center;color:#1a1b1d;font-weight:950;font-size:23px;box-shadow:0 7px 24px rgba(233,185,91,.2)}
+.brand-name{font-size:16px;font-weight:850;letter-spacing:.11em}
+.brand-sub{display:block;font-size:9px;letter-spacing:.2em;color:var(--muted);margin-top:1px}
+.top-right{display:flex;align-items:center;gap:10px}
+.status-pill{border:1px solid var(--line);border-radius:99px;padding:7px 11px;color:var(--muted);font-size:11px;display:flex;align-items:center;gap:7px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(83,198,154,.5)}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--surface3);color:var(--gold2);font-weight:800;font-size:12px}
+main{padding:28px 26px}
+.page{display:none}.page.active{display:block;animation:appear .22s ease}
+@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+h1{font-size:clamp(25px,4vw,34px);line-height:1.1;letter-spacing:-.04em;margin:7px 0 8px}
+h2{font-size:17px;margin:0;letter-spacing:-.02em}
+h3{font-size:14px;margin:0}
+.subtitle{color:var(--muted);margin:0;font-size:13px}
+.page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px}
+.btn{border:1px solid var(--line);background:var(--surface2);color:var(--text);padding:11px 15px;border-radius:13px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}
+.btn:hover{transform:translateY(-1px);background:var(--surface3)}
+.btn.primary{background:linear-gradient(135deg,#f3cf83,#dba64b);color:#211a0c;border:0;box-shadow:0 8px 24px rgba(233,185,91,.16)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--red)}
+.btn.full{width:100%}
+.btn.small{padding:8px 10px;font-size:11px;border-radius:10px}
+.grid{display:grid;gap:16px}
+.overview{grid-template-columns:repeat(3,1fr);margin-bottom:18px}
+.stat-card,.card{background:linear-gradient(145deg,rgba(23,35,51,.96),rgba(16,25,38,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat-card{padding:17px 18px;min-height:105px}
+.stat-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:11px}
+.stat-icon{width:30px;height:30px;border-radius:10px;background:rgba(233,185,91,.12);display:grid;place-items:center;color:var(--gold);font-size:15px}
+.stat-value{font-size:25px;font-weight:850;letter-spacing:-.04em;margin-top:9px;font-variant-numeric:tabular-nums}
+.stat-note{font-size:10px;color:var(--muted);margin-top:1px}
+.work-grid{grid-template-columns:minmax(0,1.45fr) minmax(285px,.8fr);align-items:start}
+.card{padding:20px}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+.step-label{font-size:10px;color:var(--gold);font-weight:800;letter-spacing:.12em}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+label{font-size:11px;color:#bac5d4;font-weight:700}
+input,select,textarea{width:100%;background:#0c1420;border:1px solid var(--line);border-radius:12px;padding:12px 13px;color:var(--text);min-width:0}
+input::placeholder,textarea::placeholder{color:#64748b}
+select{appearance:auto}
+textarea{resize:vertical;min-height:75px}
+.field-hint{font-size:10px;color:var(--muted)}
+.divider{height:1px;background:var(--line);margin:19px 0}
+.section-kicker{font-size:10px;font-weight:850;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin:0 0 12px}
+.photo-drop{border:1px dashed rgba(233,185,91,.35);border-radius:15px;background:rgba(233,185,91,.045);padding:15px;display:flex;align-items:center;gap:13px}
+.photo-icon{width:42px;height:42px;border-radius:13px;background:rgba(233,185,91,.13);display:grid;place-items:center;font-size:19px}
+.photo-copy{flex:1;min-width:0}.photo-copy strong{font-size:12px;display:block}.photo-copy span{font-size:10px;color:var(--muted)}
+.photo-preview{max-width:100%;max-height:180px;object-fit:contain;border-radius:12px;margin-top:10px;display:none}
+.result-card{position:sticky;top:94px;overflow:hidden;padding:0}
+.result-banner{padding:22px;background:linear-gradient(145deg,#26354a,#142031);border-bottom:1px solid var(--line)}
+.result-banner .eyebrow{color:var(--gold2)}
+.result-price{font-size:43px;line-height:1;font-weight:900;letter-spacing:-.06em;margin:14px 0 5px}
+.result-caption{font-size:11px;color:#aab7c8}
+.result-content{padding:19px}
+.result-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12px}
+.result-line span{color:var(--muted)}
+.result-line strong{font-variant-numeric:tabular-nums}
+.offer{margin:16px 0;padding:14px;border-radius:14px;background:rgba(233,185,91,.1);border:1px solid rgba(233,185,91,.22)}
+.offer small{font-size:10px;color:var(--gold2);font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.offer strong{font-size:27px;display:block;margin-top:3px}
+.result-foot{font-size:10px;color:var(--muted);line-height:1.5}
+.action-row{display:flex;gap:8px;margin-top:14px}.action-row .btn{flex:1}
+.category-strip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;margin-bottom:17px;scrollbar-width:none}
+.category-strip::-webkit-scrollbar{display:none}
+.cat-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:99px;background:var(--surface);padding:9px 13px;color:var(--muted);font-size:11px;font-weight:700}
+.cat-chip.active{background:rgba(233,185,91,.14);border-color:rgba(233,185,91,.45);color:var(--gold2)}
+.gold-panel{border:1px solid rgba(233,185,91,.24);background:linear-gradient(145deg,rgba(61,47,24,.35),rgba(23,35,51,.8));border-radius:16px;padding:16px;margin-top:17px}
+.gold-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.gold-price{font-size:24px;font-weight:850;letter-spacing:-.04em;margin-top:4px}
+.gold-meta{font-size:10px;color:var(--muted)}
+.gold-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px}
+.gold-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:14px}
+.gold-results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
+.gold-result{padding:11px;border:1px solid var(--line);background:rgba(8,14,22,.35);border-radius:12px}
+.gold-result small{font-size:9px;color:var(--muted);display:block}
+.gold-result strong{font-size:16px;display:block;margin-top:5px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:610px}
+th,td{text-align:left;padding:13px 12px;border-bottom:1px solid var(--line);font-size:11px}
+th{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+td strong{font-size:12px}
+.empty{padding:32px 15px;text-align:center;color:var(--muted);font-size:12px}
+.settings-grid{grid-template-columns:1fr 1fr}
+.settings-note{font-size:11px;color:var(--muted);line-height:1.6}
+.bottom-nav{display:none}
+.toast{position:fixed;left:50%;bottom:95px;transform:translate(-50%,15px);opacity:0;pointer-events:none;z-index:60;background:#f4d28c;color:#241b0c;padding:11px 16px;border-radius:99px;font-size:12px;font-weight:800;box-shadow:var(--shadow);transition:.2s;white-space:nowrap;max-width:90vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+@media(max-width:760px){
+ .topbar{height:66px;padding:0 17px}.top-right .status-pill{display:none}
+ main{padding:21px 15px 24px}
+ .page-heading{align-items:flex-start;flex-direction:column;margin-bottom:19px}
+ .page-heading .btn{width:100%}
+ .overview{gap:9px;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .stat-card{padding:12px 11px;min-height:92px;border-radius:15px}
+ .stat-top{font-size:9px;align-items:flex-start}.stat-icon{width:25px;height:25px;font-size:12px}
+ .stat-value{font-size:19px;margin-top:8px}.stat-note{font-size:9px}
+ .work-grid{grid-template-columns:1fr}
+ .card{padding:16px;border-radius:17px}
+ .result-card{position:static;order:-1}
+ .result-banner{padding:18px}.result-price{font-size:38px}
+ .result-content{padding:15px}
+ .bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;bottom:0;left:0;right:0;z-index:30;padding:8px 7px calc(8px + env(safe-area-inset-bottom));background:rgba(10,15,24,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+ .nav-item{border:0;background:transparent;color:#78879b;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:5px 2px}
+ .nav-item .nav-ico{font-size:19px;line-height:1.1}
+ .nav-item.active{color:var(--gold2)}
+ .gold-results{grid-template-columns:1fr 1fr 1fr}
+ .settings-grid{grid-template-columns:1fr}
+ .toast{bottom:calc(85px + env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){.overview{grid-template-columns:1fr 1fr}.overview .stat-card:last-child{grid-column:1/-1}.form-grid,.gold-grid{grid-template-columns:1fr}.gold-results{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+ <div class="brand"><div class="brand-mark">R</div><div><div class="brand-name">REBUY PRO</div><span class="brand-sub">ASSISTANT DE RACHAT</span></div></div>
+ <div class="top-right"><div class="status-pill"><i class="status-dot"></i> Espace personnel</div><div class="avatar">RP</div></div>
+</header>
+<main>
+<section class="page active" id="estimatePage">
+ <div class="page-heading"><div><div class="eyebrow">Ton espace de reprise</div><h1>Nouvelle estimation</h1><p class="subtitle">Identifie le produit, estime sa valeur et prépare ton offre.</p></div><button class="btn ghost" id="resetBtn">↺ Réinitialiser</button></div>
+ <div class="overview">
+  <div class="stat-card"><div class="stat-top">Estimations <span class="stat-icon">▤</span></div><div class="stat-value" id="statCount">0</div><div class="stat-note">Enregistrées sur cet appareil</div></div>
+  <div class="stat-card"><div class="stat-top">Rachat moyen <span class="stat-icon">€</span></div><div class="stat-value" id="statAvg">—</div><div class="stat-note">Prix maximum conseillé</div></div>
+  <div class="stat-card"><div class="stat-top">Marge cible <span class="stat-icon">↗</span></div><div class="stat-value" id="statMargin">30 %</div><div class="stat-note">Paramètre actuel</div></div>
+ </div>
+ <div class="category-strip" id="categoryStrip">
+  <button class="cat-chip active" data-cat="Téléphonie">📱 Téléphonie</button>
+  <button class="cat-chip" data-cat="Informatique">💻 Informatique</button>
+  <button class="cat-chip" data-cat="Consoles">🎮 Consoles</button>
+  <button class="cat-chip" data-cat="Bijoux & métaux précieux">💍 Bijoux & or</button>
+  <button class="cat-chip" data-cat="Montres">⌚ Montres</button>
+  <button class="cat-chip" data-cat="Multimédia">📷 Multimédia</button>
+  <button class="cat-chip" data-cat="Autres">✦ Autres</button>
+ </div>
+ <div class="grid work-grid">
+  <div class="card">
+   <div class="card-head"><div><div class="step-label">ÉTAPE 01 · IDENTIFICATION</div><h2 style="margin-top:5px">Informations du produit</h2></div><span style="font-size:20px">⌕</span></div>
+   <div class="photo-drop">
+    <div class="photo-icon">📸</div><div class="photo-copy"><strong>Ajouter une photo du produit</strong><span>Prends une photo ou importe une image pour préparer son identification.</span></div>
+    <label class="btn small" for="photoInput">Photo</label><input id="photoInput" type="file" accept="image/*" capture="environment" hidden>
+   </div>
+   <img id="photoPreview" class="photo-preview" alt="Aperçu du produit">
+   <div class="divider"></div>
+   <div class="form-grid">
+    <div class="field"><label for="brand">Marque</label><input id="brand" placeholder="Apple, Samsung…"></div>
+    <div class="field"><label for="model">Modèle</label><input id="model" placeholder="iPhone 15 Pro…"></div>
+    <div class="field"><label for="reference">Référence / capacité</label><input id="reference" placeholder="256 Go, numéro de modèle…"></div>
+    <div class="field"><label for="condition">État esthétique</label><select id="condition"><option>Comme neuf</option><option selected>Bon état</option><option>État correct</option><option>Abîmé</option><option>Pour pièces</option></select></div>
+    <div class="field"><label for="function">Fonctionnement</label><select id="function"><option value="100">100 % fonctionnel</option><option value="90">Petits défauts</option><option value="75">Fonctionnement partiel</option><option value="0">Non fonctionnel</option><option value="50">Non testé</option></select></div>
+    <div class="field"><label for="accessories">Accessoires</label><select id="accessories"><option>Complets</option><option>Partiels</option><option>Aucun</option></select></div>
+    <div class="field full"><label for="notes">Observations / défauts</label><textarea id="notes" placeholder="Batterie, écran, rayures, accessoires manquants…"></textarea></div>
+   </div>
+   <div id="goldModule" class="gold-panel hidden">
+    <div class="gold-header"><div><div class="eyebrow">Métaux précieux</div><h3 style="margin-top:4px">Calculateur de valeur de l'or</h3><div class="gold-meta">Valeur indicative du métal, hors pierres et frais.</div></div><button class="btn small" id="refreshGold">↻ Actualiser</button></div>
+    <div style="margin-top:14px"><div class="gold-meta">Cours de référence · EUR / gramme</div><div class="gold-price" id="goldSpot">— €/g</div><div class="gold-meta" id="goldStatus">Cours non chargé · saisie manuelle possible</div></div>
+    <div class="gold-grid">
+     <div class="field"><label for="goldWeight">Poids total (g)</label><input id="goldWeight" type="number" min="0" step=".01" placeholder="Ex. 15,30"></div>
+     <div class="field"><label for="goldOtherWeight">Pierres / éléments non-or (g)</label><input id="goldOtherWeight" type="number" min="0" step=".01" value="0"></div>
+     <div class="field"><label for="goldKarat">Titrage</label><select id="goldKarat"><option value="9">9 carats</option><option value="14">14 carats</option><option value="18" selected>18 carats</option><option value="22">22 carats</option><option value="24">24 carats</option></select></div>
+     <div class="field"><label for="goldDeduction">Décote de rachat (%)</label><input id="goldDeduction" type="number" min="0" max="100" value="10"></div>
+     <div class="field full"><label for="goldManual">Cours manuel de secours (€/g)</label><input id="goldManual" type="number" min="0" step=".01" placeholder="Laisser vide pour utiliser le cours automatique"></div>
+    </div>
+    <div class="gold-results"><div class="gold-result"><small>Poids net</small><strong id="goldNet">0,00 g</strong></div><div class="gold-result"><small>Valeur métal</small><strong id="goldTheoretical">—</strong></div><div class="gold-result"><small>Après décote</small><strong id="goldNetValue">—</strong></div></div>
+   </div>
+   <div class="divider"></div>
+   <div class="step-label">ÉTAPE 02 · VALORISATION</div>
+   <div class="form-grid" style="margin-top:13px">
+    <div class="field"><label for="resaleLow">Revente basse (€)</label><input id="resaleLow" type="number" min="0" step=".01" placeholder="Ex. 350"></div>
+    <div class="field"><label for="resaleHigh">Revente haute (€)</label><input id="resaleHigh" type="number" min="0" step=".01" placeholder="Ex. 420"></div>
+    <div class="field"><label for="scenario">Scénario de calcul</label><select id="scenario"><option value="low">Prudent · bas</option><option value="mid" selected>Médian</option><option value="high">Optimiste · haut</option></select></div>
+    <div class="field"><label for="source">Source du prix</label><select id="source"><option>Prix observés en ligne</option><option>Connaissance personnelle</option><option>Prix saisi manuellement</option><option>Estimation IA à vérifier</option></select></div>
+    <div class="field"><label for="margin">Marge cible (%)</label><input id="margin" type="number" min="0" max="95" value="30"></div>
+    <div class="field"><label for="risk">Réserve de risque (%)</label><input id="risk" type="number" min="0" max="50" value="5"></div>
+    <div class="field"><label for="costs">Frais / réparation (€)</label><input id="costs" type="number" min="0" step=".01" value="0"></div>
+    <div class="field"><label for="negotiation">Marge de négociation (%)</label><input id="negotiation" type="number" min="0" max="50" value="5"></div>
+   </div>
+   <div class="action-row" style="margin-top:19px"><button class="btn primary full" id="saveBtn">＋ Enregistrer l'estimation</button></div>
+   <div class="action-row"><button class="btn full" id="claudeBtn">✦ Préparer l'analyse IA</button><button class="btn full" id="marketBtn">⌕ Rechercher le marché</button></div>
+   <p class="field-hint" style="margin-top:12px">L'analyse IA et les prix du marché doivent être vérifiés à partir de sources réelles. Ce prototype ne réalise pas encore de recherche automatique intégrée.</p>
+  </div>
+  <aside class="card result-card">
+   <div class="result-banner"><div class="eyebrow">Ta recommandation</div><h2 style="margin-top:5px">Estimation de rachat</h2><div class="result-price" id="maxBuy">— €</div><div class="result-caption">Prix maximum conseillé au magasin</div></div>
+   <div class="result-content">
+    <div class="result-line"><span>Prix de revente retenu</span><strong id="retained">—</strong></div>
+    <div class="result-line"><span>Marge cible</span><strong id="marginVal">30 %</strong></div>
+    <div class="result-line"><span>Réserve de risque</span><strong id="riskVal">5 %</strong></div>
+    <div class="result-line"><span>Frais estimés</span><strong id="costVal">0,00 €</strong></div>
+    <div class="result-line"><span>Marge brute théorique</span><strong id="grossMargin">—</strong></div>
+    <div class="offer"><small>Proposition de départ</small><strong id="offer">— €</strong></div>
+    <div class="result-foot" id="calcNote">Renseigne un prix de revente pour obtenir une recommandation.</div>
+    <div class="action-row"><button class="btn small full" id="copyBtn">Copier le résumé</button><button class="btn small full" id="printBtn">Imprimer</button></div>
+   </div>
+  </aside>
+ </div>
+</section>
+
+<section class="page" id="historyPage">
+ <div class="page-heading"><div><div class="eyebrow">Suivi personnel</div><h1>Historique</h1><p class="subtitle">Retrouve les estimations enregistrées sur cet appareil.</p></div><button class="btn" id="exportBtn">↓ Exporter CSV</button></div>
+ <div class="card"><div class="card-head"><div><h2>Estimations enregistrées</h2><div class="field-hint" id="historyCount">0 estimation</div></div><button class="btn small danger" id="clearBtn">Tout effacer</button></div>
+ <div class="table-wrap"><table><thead><tr><th>Date</th><th>Produit</th><th>Catégorie</th><th>Revente</th><th>Max rachat</th><th>Offre</th><th></th></tr></thead><tbody id="historyRows"><tr><td colspan="7" class="empty">Aucune estimation pour le moment.</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="settingsPage">
+ <div class="page-heading"><div><div class="eyebrow">Personnalisation</div><h1>Paramètres</h1><p class="subtitle">Définis tes règles de calcul par défaut.</p></div></div>
+ <div class="grid settings-grid">
+  <div class="card"><div class="card-head"><h2>Règles de rachat</h2><span>⚙</span></div>
+   <div class="form-grid">
+    <div class="field"><label for="defaultMargin">Marge cible (%)</label><input id="defaultMargin" type="number" min="0" max="95" value="30"></div>
+    <div class="field"><label for="defaultRisk">Réserve de risque (%)</label><input id="defaultRisk" type="number" min="0" max="50" value="5"></div>
+    <div class="field"><label for="defaultNegotiation">Négociation (%)</label><input id="defaultNegotiation" type="number" min="0" max="50" value="5"></div>
+   </div><button class="btn primary full" id="saveSettings" style="margin-top:16px">Enregistrer les paramètres</button>
+  </div>
+  <div class="card"><div class="card-head"><h2>Application</h2><span>✦</span></div>
+   <p class="settings-note">REBUY PRO est un prototype personnel. Les estimations et l'historique sont stockés localement dans ce navigateur. Pour les retrouver sur plusieurs appareils, une base de données cloud et une authentification devront être ajoutées.</p>
+   <div class="divider"></div>
+   <p class="settings-note"><strong style="color:var(--text)">Installation iPhone :</strong><br>Héberge le dossier sur une adresse HTTPS, ouvre cette adresse dans Safari, appuie sur Partager puis « Sur l'écran d'accueil ». Active « Ouvrir comme app web » si l'option est proposée.</p>
+   <div class="divider"></div><div class="settings-note">Version mobile PWA · v1.0<br>Non affiliée officiellement à Cash Converters.</div>
+  </div>
+ </div>
+</section>
+</main>
+<nav class="bottom-nav" aria-label="Navigation principale">
+ <button class="nav-item active" data-page="estimate"><span class="nav-ico">⌕</span><span>Estimer</span></button>
+ <button class="nav-item" data-page="history"><span class="nav-ico">▤</span><span>Historique</span></button>
+ <button class="nav-item" data-page="settings"><span class="nav-ico">⚙</span><span>Réglages</span></button>
+ <button class="nav-item" id="installBtn"><span class="nav-ico">＋</span><span>Installer</span></button>
+</nav>
+<div class="toast" id="toast"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const ids=['brand','model','reference','condition','function','accessories','notes','resaleLow','resaleHigh','scenario','source','margin','risk','costs','negotiation','goldWeight','goldOtherWeight','goldKarat','goldDeduction','goldManual','goldBasis'];
+const euro=n=>Number(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:2});
+const num=id=>Math.max(0,Number(String($(id)?.value||'0').replace(',','.'))||0);
+let records=JSON.parse(localStorage.getItem('rebuy_records')||'[]');
+let settings=JSON.parse(localStorage.getItem('rebuy_settings')||'{"margin":30,"risk":5,"negotiation":5}');
+let goldSpot=0,goldAsOf='',installPrompt=null;
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
+function goldCalc(){
+ const weight=num('goldWeight'),other=num('goldOtherWeight'),net=Math.max(0,weight-other),karat=Number($('goldKarat').value)||18,deduction=Math.min(100,num('goldDeduction'));
+ const spot=num('goldManual')||goldSpot,purity=({9:.375,14:.585,18:.75,22:.916,24:.999}[karat]||karat/24);
+ const theoretical=net*spot*purity,netValue=theoretical*(1-deduction/100);
+ $('goldSpot').textContent=spot?euro(spot)+'/g':'— €/g';$('goldNet').textContent=net.toFixed(2).replace('.',',')+' g';$('goldTheoretical').textContent=spot?euro(theoretical):'—';$('goldNetValue').textContent=spot?euro(netValue):'—';
+ return{weight,other,net,karat,deduction,spot,theoretical,netValue};
+}
+function current(){
+ let low=num('resaleLow'),high=num('resaleHigh');if(high&&low&&high<low)[low,high]=[high,low];
+ const scenario=$('scenario').value,manual=scenario==='low'?(low||high):scenario==='high'?(high||low):(low&&high?(low+high)/2:(low||high));
+ const isGold=activeCategory==='Bijoux & métaux précieux',g=goldCalc(),resale=isGold&&goldMode==='metal'?g.netValue:manual;
+ const margin=Math.min(95,num('margin')),risk=Math.min(50,num('risk')),costs=num('costs'),neg=Math.min(50,num('negotiation'));
+ const riskReserve=resale*risk/100,max=Math.max(0,resale*(1-margin/100)-riskReserve-costs),offer=max*(1-neg/100),gross=resale-max-costs-riskReserve;
+ return{low,high,resale,margin,risk,costs,neg,max,offer,gross,riskReserve,g,isGold};
+}
+let activeCategory='Téléphonie',goldMode='metal';
+function update(){
+ const c=current();
+ $('maxBuy').textContent=c.resale?euro(c.max):'— €';$('retained').textContent=c.resale?euro(c.resale):'—';
+ $('marginVal').textContent=c.margin+' %';$('riskVal').textContent=c.risk+' %';$('costVal').textContent=euro(c.costs);
+ $('grossMargin').textContent=c.resale?euro(c.gross):'—';$('offer').textContent=c.resale?euro(c.offer):'—';
+ $('calcNote').textContent=c.resale?(c.isGold?'Calcul indicatif basé sur le poids net, le titrage et le cours de l’or.':'Simulation selon tes hypothèses. Vérifie les prix comparables avant de proposer un rachat.'):'Renseigne une fourchette de revente pour obtenir une recommandation.';
+}
+function refresh(){
+ $('statCount').textContent=records.length;
+ $('statAvg').textContent=records.length?euro(records.reduce((s,r)=>s+r.max,0)/records.length):'—';
+ $('statMargin').textContent=(settings.margin??30)+' %';
+ $('historyCount').textContent=records.length+' estimation'+(records.length>1?'s':'');
+ $('historyRows').innerHTML=records.length?records.map(r=>`<tr><td>${esc(r.date)}</td><td><strong>${esc(r.product)}</strong><div class="field-hint">${esc(r.reference||'')}</div></td><td>${esc(r.category)}</td><td>${euro(r.resale)}</td><td><strong>${euro(r.max)}</strong></td><td>${euro(r.offer)}</td><td><button class="btn small danger" onclick="removeRecord(${r.id})">Supprimer</button></td></tr>`).join(''):'<tr><td colspan="7" class="empty">Aucune estimation pour le moment.</td></tr>';
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function removeRecord(id){records=records.filter(r=>r.id!==id);localStorage.setItem('rebuy_records',JSON.stringify(records));refresh();toast('Estimation supprimée.')}
+function page(p){
+ ['estimate','history','settings'].forEach(x=>$(x+'Page').classList.toggle('active',x===p));
+ document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
+ if(p==='history')refresh();
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>page(b.dataset.page)));
+document.querySelectorAll('.cat-chip').forEach(b=>b.addEventListener('click',()=>{
+ activeCategory=b.dataset.cat;document.querySelectorAll('.cat-chip').forEach(x=>x.classList.toggle('active',x===b));
+ $('goldModule').classList.toggle('hidden',activeCategory!=='Bijoux & métaux précieux');update();
+}));
+ids.forEach(id=>{const el=$(id);if(el)el.addEventListener('input',update)});
+['goldKarat','condition','function','accessories','scenario'].forEach(id=>$(id).addEventListener('change',update));
+$('refreshGold').addEventListener('click',fetchGold);
+async function fetchGold(){
+ $('goldStatus').textContent='Actualisation du cours…';
+ try{
+  const res=await fetch('https://goldprice.corgano.com/api/v1/latest?currency=EUR',{cache:'no-store'});
+  if(!res.ok)throw new Error('API indisponible');
+  const data=await res.json(),v=Number(data?.data?.currencies?.EUR?.per_gram);
+  if(!v)throw new Error('Cours non disponible');
+  goldSpot=v;goldAsOf=data.data.as_of||'';
+  localStorage.setItem('rebuy_gold_cache',JSON.stringify({spot:v,asOf:goldAsOf}));
+  $('goldStatus').textContent='Cours actualisé · '+(goldAsOf?new Date(goldAsOf).toLocaleString('fr-FR'):'maintenant');
+ }catch(e){
+  const cache=JSON.parse(localStorage.getItem('rebuy_gold_cache')||'null');
+  if(cache?.spot){goldSpot=Number(cache.spot);goldAsOf=cache.asOf||'';$('goldStatus').textContent='Hors ligne · dernier cours mémorisé';}
+  else $('goldStatus').textContent='Cours indisponible · saisis un cours manuel';
+ }
+ update();
+}
+function buildPrompt(){
+ const c=current(),prod=[ $('brand').value,$('model').value,$('reference').value].filter(Boolean).join(' ');
+ return `Agis comme un expert en estimation de produits d'occasion pour un magasin de rachat à La Réunion. Analyse ce produit : ${prod||'produit non précisé'}. Catégorie : ${activeCategory}. État esthétique : ${$('condition').value}. Fonctionnement : ${$('function').selectedOptions[0].text}. Accessoires : ${$('accessories').value}. Observations : ${$('notes').value||'aucune'}. Fourchette de revente saisie : ${$('resaleLow').value||'non renseignée'} à ${$('resaleHigh').value||'non renseignée'} EUR. Marge cible ${c.margin}%, réserve risque ${c.risk}%, frais ${c.costs} EUR. Recherche des annonces réellement comparables et récentes, donne les liens, dates et distingue prix affichés/prix vendus. N'invente aucune donnée. Tiens compte de La Réunion. Calcule un prix de rachat prudent et explique les incertitudes.`;
+}
+$('claudeBtn').addEventListener('click',async()=>{
+ const prompt=buildPrompt();
+ try{await navigator.clipboard.writeText(prompt);toast('Consigne copiée · colle-la dans Claude.')}
+ catch(e){toast('Impossible de copier automatiquement.')}
+ window.open('https://claude.ai/new','_blank','noopener');
+});
+$('marketBtn').addEventListener('click',()=>{
+ const q=[$('brand').value,$('model').value,$('reference').value,'occasion La Réunion'].filter(Boolean).join(' ');
+ if(!q.trim()){toast('Renseigne au moins une marque ou un modèle.');return;}
+ window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank','noopener');
+});
+$('saveBtn').addEventListener('click',()=>{
+ const c=current();if(!c.resale){toast('Ajoute un prix de revente ou un cours de l’or valide.');return;}
+ const r={id:Date.now(),date:new Date().toLocaleString('fr-FR'),product:[$('brand').value,$('model').value].filter(Boolean).join(' ')||'Produit sans nom',category:activeCategory,reference:$('reference').value,resale:c.resale,max:c.max,offer:c.offer,margin:c.margin,notes:$('notes').value,source:$('source').value};
+ records.unshift(r);localStorage.setItem('rebuy_records',JSON.stringify(records));refresh();toast('Estimation enregistrée.');
+});
+$('copyBtn').addEventListener('click',async()=>{
+ const c=current(),summary=`REBUY PRO\nProduit : ${$('brand').value} ${$('model').value}\nCatégorie : ${activeCategory}\nRevente retenue : ${euro(c.resale)}\nRachat maximum : ${euro(c.max)}\nProposition de départ : ${euro(c.offer)}\nMarge cible : ${c.margin}%`;
+ try{await navigator.clipboard.writeText(summary);toast('Résumé copié.')}catch(e){toast('Copie indisponible sur ce navigateur.')}
+});
+$('printBtn').addEventListener('click',()=>window.print());
+$('resetBtn').addEventListener('click',()=>{
+ ['brand','model','reference','notes','resaleLow','resaleHigh','goldWeight','goldManual'].forEach(id=>$(id).value='');
+ $('goldOtherWeight').value=0;$('goldKarat').value=18;$('goldDeduction').value=10;$('condition').value='Bon état';$('function').value=100;$('accessories').value='Complets';$('scenario').value='mid';$('costs').value=0;
+ activeCategory='Téléphonie';document.querySelectorAll('.cat-chip').forEach(b=>b.classList.toggle('active',b.dataset.cat===activeCategory));$('goldModule').classList.add('hidden');update();toast('Formulaire réinitialisé.');
+});
+$('exportBtn').addEventListener('click',()=>{
+ if(!records.length){toast('Aucune donnée à exporter.');return;}
+ const cols=['date','product','category','reference','resale','max','offer','margin','notes','source'];
+ const csv=[cols.join(';'),...records.map(r=>cols.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(';'))].join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='rebuy-pro-estimations.csv';a.click();URL.revokeObjectURL(a.href);
+});
+$('clearBtn').addEventListener('click',()=>{if(confirm('Supprimer tout l’historique de cet appareil ?')){records=[];localStorage.removeItem('rebuy_records');refresh();toast('Historique supprimé.')}});
+$('defaultMargin').value=settings.margin??30;$('defaultRisk').value=settings.risk??5;$('defaultNegotiation').value=settings.negotiation??5;
+$('saveSettings').addEventListener('click',()=>{
+ settings={margin:Math.min(95,num('defaultMargin')),risk:Math.min(50,num('defaultRisk')),negotiation:Math.min(50,num('defaultNegotiation'))};
+ localStorage.setItem('rebuy_settings',JSON.stringify(settings));$('margin').value=settings.margin;$('risk').value=settings.risk;$('negotiation').value=settings.negotiation;refresh();update();toast('Paramètres enregistrés.');
+});
+$('margin').value=settings.margin??30;$('risk').value=settings.risk??5;$('negotiation').value=settings.negotiation??5;
+$('photoInput').addEventListener('change',e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ const url=URL.createObjectURL(file);$('photoPreview').src=url;$('photoPreview').style.display='block';toast('Photo ajoutée · identification IA à connecter.');
+});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;});
+$('installBtn').addEventListener('click',async()=>{
+ if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;}
+ else toast('Sur iPhone : Safari → Partager → Sur l’écran d’accueil.');
+});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+refresh();update();fetchGold();setInterval(fetchGold,15*60*1000);
+</script>
+</body></html>

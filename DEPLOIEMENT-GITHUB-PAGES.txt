@@ -1,0 +1,41 @@
+REBUY PRO — DEPLOIEMENT GRATUIT SUR GITHUB PAGES
+
+Pré-requis : un compte GitHub gratuit.
+
+1) Créer un dépôt
+- Ouvrir https://github.com/new
+- Repository name : rebuy-pro
+- Choisir Public (GitHub Pages gratuit pour les dépôts publics)
+- Cliquer sur Create repository.
+
+2) Ajouter les fichiers
+- Dans le dépôt, cliquer Add file > Upload files.
+- Décompresser le ZIP sur l'ordinateur.
+- Envoyer TOUS les fichiers et dossiers contenus dans rebuy-pro-mobile (index.html, manifest.webmanifest, sw.js, icons, .nojekyll).
+- Important : index.html doit être à la racine du dépôt, pas dans un sous-dossier.
+- Cliquer Commit changes.
+
+3) Activer Pages
+- Aller dans Settings > Pages.
+- Dans Build and deployment, choisir Deploy from a branch.
+- Branch : main ; Folder : / (root).
+- Cliquer Save.
+
+4) Attendre le déploiement
+- GitHub affiche l'adresse du site dans Settings > Pages.
+- Elle ressemble à https://VOTRE-PSEUDO.github.io/rebuy-pro/
+- Ouvrir cette adresse dans Safari sur l'iPhone.
+
+5) Installer sur iPhone
+- Dans Safari, ouvrir le site HTTPS.
+- Appuyer sur Partager (carré avec flèche).
+- Choisir Ajouter à l'écran d'accueil.
+- Si l'option apparaît, activer Ouvrir comme app web.
+- Appuyer sur Ajouter.
+
+NOTES
+- GitHub Pages est un hébergement statique gratuit. Il ne fournit pas à lui seul une base de données, un serveur privé ou une API Claude.
+- Les estimations et l'historique actuels restent dans le stockage local de chaque navigateur/appareil. Ils ne sont donc pas synchronisés entre iPhone et ordinateur.
+- Le bouton IA prépare une consigne à coller dans Claude ; il n'appelle pas encore l'API Claude.
+- Les fonctions en ligne (cours de l'or, recherche web) nécessitent une connexion Internet.
+- Pour un dépôt privé, vérifier les conditions d'accès GitHub Pages du compte avant de choisir cette option.
